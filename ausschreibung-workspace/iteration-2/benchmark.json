@@ -1,0 +1,142 @@
+{
+  "metadata": {
+    "skill_name": "ausschreibung",
+    "skill_path": "~/.claude/skills/ausschreibung",
+    "executor_model": "claude-sonnet-4-6",
+    "analyzer_model": "claude-sonnet-4-6",
+    "timestamp": "2026-04-30T21:04:34Z",
+    "evals_run": ["umweltbundesamt-ipcc-grafiken", "leopoldina-hirnorganoide-scrollytelling", "greentrails-progressive-web-app"],
+    "runs_per_configuration": 1
+  },
+  "runs": [
+    {
+      "run_id": "eval-0-with_skill",
+      "eval_id": 0,
+      "eval_name": "umweltbundesamt-ipcc-grafiken",
+      "configuration": "with_skill",
+      "pass_rate": 1.0,
+      "time_seconds": 239.9,
+      "total_tokens": 81475,
+      "expectations": [
+        {"text": "Alle 6 Snapshot-Felder inkl. Bieterfragen", "passed": true, "evidence": "Bieterfragen möglich bis: 07.07.2022 vorhanden"},
+        {"text": "Budget-Schätzung bei fehlendem Budget", "passed": true, "evidence": "ca. 25.000–45.000 € netto Schätzung vorhanden"},
+        {"text": "Scope + Output-Format im Designer-Abschnitt", "passed": true, "evidence": "Scope- und Output-Format-Felder vorhanden"},
+        {"text": "Keine doppelten Auftraggeber in Referenzen", "passed": true, "evidence": "MDR, Leopoldina/acatech, Fraunhofer — drei unterschiedliche Kunden"},
+        {"text": "Adobe Suite nicht als Lücke gelistet", "passed": true, "evidence": "Adobe Suite in Stärken: 'Standardwerkzeuge im Figures-Workflow'"},
+        {"text": "Fit-Score gesetzt", "passed": true, "evidence": "Fit-Score: Hoch"},
+        {"text": "Checkpoint gestellt", "passed": true, "evidence": "Checkpoint-Frage gestellt"}
+      ]
+    },
+    {
+      "run_id": "eval-0-old_skill",
+      "eval_id": 0,
+      "eval_name": "umweltbundesamt-ipcc-grafiken",
+      "configuration": "old_skill",
+      "pass_rate": 0.43,
+      "time_seconds": 186.3,
+      "total_tokens": 74939,
+      "expectations": [
+        {"text": "Alle 6 Snapshot-Felder inkl. Bieterfragen", "passed": false, "evidence": "Kein Bieterfragen-Feld in Iteration-1"},
+        {"text": "Budget-Schätzung bei fehlendem Budget", "passed": false, "evidence": "Nur 'Nicht angegeben' in Iteration-1"},
+        {"text": "Scope + Output-Format im Designer-Abschnitt", "passed": false, "evidence": "Kein Scope/Output-Format-Feld in Iteration-1"},
+        {"text": "Keine doppelten Auftraggeber in Referenzen", "passed": true, "evidence": "MDR, Leopoldina, Fraunhofer — korrekt"},
+        {"text": "Adobe Suite nicht als Lücke gelistet", "passed": false, "evidence": "Iteration-1 listete Adobe-Suite als Risiko/Lücke"},
+        {"text": "Fit-Score gesetzt", "passed": true, "evidence": "Fit-Score: Hoch"},
+        {"text": "Checkpoint gestellt", "passed": true, "evidence": "Checkpoint gestellt"}
+      ]
+    },
+    {
+      "run_id": "eval-1-with_skill",
+      "eval_id": 1,
+      "eval_name": "leopoldina-hirnorganoide-scrollytelling",
+      "configuration": "with_skill",
+      "pass_rate": 1.0,
+      "time_seconds": 218.0,
+      "total_tokens": 70458,
+      "expectations": [
+        {"text": "Alle 6 Snapshot-Felder inkl. Bieterfragen", "passed": true, "evidence": "Bieterfragen möglich bis: 23.02.2022"},
+        {"text": "Designer-Scope: Figures vs. AG-Lieferung", "passed": true, "evidence": "Scope-Feld erklärt Aufgabenteilung mit Grafiker der Leopoldina"},
+        {"text": "Max. 1 Referenz vom selben Auftraggeber", "passed": true, "evidence": "Nur Artenvielfalt (Leopoldina); h2info und Wasserstoff Story andere Kunden"},
+        {"text": "Fit-Score Hoch", "passed": true, "evidence": "Fit-Score: Hoch"},
+        {"text": "Checkpoint gestellt", "passed": true, "evidence": "Checkpoint-Frage gestellt"}
+      ]
+    },
+    {
+      "run_id": "eval-1-old_skill",
+      "eval_id": 1,
+      "eval_name": "leopoldina-hirnorganoide-scrollytelling",
+      "configuration": "old_skill",
+      "pass_rate": 0.40,
+      "time_seconds": 122.3,
+      "total_tokens": 63460,
+      "expectations": [
+        {"text": "Alle 6 Snapshot-Felder inkl. Bieterfragen", "passed": false, "evidence": "Kein Bieterfragen-Feld in Iteration-1"},
+        {"text": "Designer-Scope: Figures vs. AG-Lieferung", "passed": false, "evidence": "Kein Scope-Feld in Iteration-1"},
+        {"text": "Max. 1 Referenz vom selben Auftraggeber", "passed": false, "evidence": "Iteration-1: Hirnorganoide UND Artenvielfalt — beide Leopoldina"},
+        {"text": "Fit-Score Hoch", "passed": true, "evidence": "Fit-Score: Hoch"},
+        {"text": "Checkpoint gestellt", "passed": true, "evidence": "Checkpoint gestellt"}
+      ]
+    },
+    {
+      "run_id": "eval-2-with_skill",
+      "eval_id": 2,
+      "eval_name": "greentrails-progressive-web-app",
+      "configuration": "with_skill",
+      "pass_rate": 1.0,
+      "time_seconds": 214.1,
+      "total_tokens": 53898,
+      "expectations": [
+        {"text": "Was-erstellt-werden-soll: Kernfunktionen mit Details", "passed": true, "evidence": "Filter, Status-Ampel, Account, Admin/CMS, Events, Blog alle genannt"},
+        {"text": "Developer: Admin-/CMS-Bereich und alle Entitäten", "passed": true, "evidence": "Vollständige Integrationsliste inkl. Admin-/CMS-Bereich"},
+        {"text": "Fit: Komplexität vs. Teamkapazität bewertet", "passed": true, "evidence": "60–120 Tage Aufwand, am oberen Ende für 4-Personen-Team"},
+        {"text": "Fit-Score gesetzt", "passed": true, "evidence": "Fit-Score: Mittel"},
+        {"text": "Checkpoint gestellt", "passed": true, "evidence": "Checkpoint-Frage gestellt"}
+      ]
+    },
+    {
+      "run_id": "eval-2-old_skill",
+      "eval_id": 2,
+      "eval_name": "greentrails-progressive-web-app",
+      "configuration": "old_skill",
+      "pass_rate": 0.80,
+      "time_seconds": 180.7,
+      "total_tokens": 55668,
+      "expectations": [
+        {"text": "Was-erstellt-werden-soll: Kernfunktionen mit Details", "passed": false, "evidence": "Iteration-1: Funktionsbereiche ohne Filter/Status-Ampel-Details"},
+        {"text": "Developer: Admin-/CMS-Bereich und alle Entitäten", "passed": true, "evidence": "Admin-/CMS-Bereich in Iteration-1 enthalten"},
+        {"text": "Fit: Komplexität vs. Teamkapazität bewertet", "passed": true, "evidence": "Iteration-1: Projektgröße 60-120 Tage erwähnt"},
+        {"text": "Fit-Score gesetzt", "passed": true, "evidence": "Fit-Score: Mittel"},
+        {"text": "Checkpoint gestellt", "passed": true, "evidence": "Checkpoint gestellt"}
+      ]
+    }
+  ],
+  "run_summary": {
+    "with_skill": {
+      "pass_rate_mean": 1.0,
+      "pass_rate_stddev": 0.0,
+      "time_seconds_mean": 224.0,
+      "time_seconds_stddev": 13.6,
+      "tokens_mean": 68610,
+      "tokens_stddev": 11516
+    },
+    "old_skill": {
+      "pass_rate_mean": 0.54,
+      "pass_rate_stddev": 0.21,
+      "time_seconds_mean": 163.1,
+      "time_seconds_stddev": 34.0,
+      "tokens_mean": 64689,
+      "tokens_stddev": 8150
+    },
+    "delta": {
+      "pass_rate": "+0.46",
+      "time_seconds": "+60.9",
+      "tokens": "+3921"
+    }
+  },
+  "notes": [
+    "old_skill baseline = iteration-1 with_skill outputs (same prompts, previous skill version)",
+    "with_skill = iteration-2 with updated SKILL.md and figures-config.md",
+    "Pass rate improvement: +46 percentage points (54% → 100%)",
+    "Token increase is minor (+6%); time increase (+37%) reflects more thorough output with new fields"
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "eval_id": 1,
+  "eval_name": "leopoldina-scrollytelling",
+  "prompt": "Neue Ausschreibung ist reingekommen, bitte analysieren: /Users/saschacollet/Dev/Ausschreibungsskill/Beispiele/TN010 Leopoldina_Hirnorganoide/Incoming/",
+  "assertions": [
+    {"name": "creates_three_files", "check": "Alle 3 Phase-1-Dateien existieren in outputs/"},
+    {"name": "fit_score_hoch", "check": "Fit-Score ist Hoch"},
+    {"name": "references_portfolio_project", "check": "02_fit-bewertung.md nennt mindestens ein konkretes Portfolio-Projekt namentlich"},
+    {"name": "german_language", "check": "Alle drei Dateien sind auf Deutsch"}
+  ]
+}

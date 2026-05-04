@@ -1,0 +1,9 @@
+{"expectations": [
+  {"text": "creates_summary_file", "passed": true, "evidence": "01_zusammenfassung.md vorhanden in outputs/"},
+  {"text": "creates_fit_file", "passed": true, "evidence": "02_fit-bewertung.md vorhanden"},
+  {"text": "creates_checklist_file", "passed": true, "evidence": "03_checkliste.md vorhanden"},
+  {"text": "summary_has_four_sections", "passed": true, "evidence": "Alle 4 Abschnitte gefunden (grep liefert 4 Treffer)"},
+  {"text": "fit_score_set", "passed": true, "evidence": "## Fit-Score: Hoch"},
+  {"text": "checklist_has_table", "passed": true, "evidence": "Tabelle mit konkreten Dokumentnamen, Deadlines und Notizen vorhanden"},
+  {"text": "checkpoint_asked", "passed": true, "evidence": "Subagent bestätigte: Checkpoint gestellt mit Fit-Score Hoch"}
+]}

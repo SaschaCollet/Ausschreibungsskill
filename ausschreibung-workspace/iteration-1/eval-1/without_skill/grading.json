@@ -1,0 +1,6 @@
+{"expectations": [
+  {"text": "creates_three_files", "passed": true, "evidence": "3 baseline-Dateien vorhanden"},
+  {"text": "fit_score_hoch", "passed": false, "evidence": "Kein klarer Fit-Score — allgemeine Einschätzung ohne Score-System"},
+  {"text": "references_portfolio_project", "passed": false, "evidence": "Keine Figures-Portfolio-Referenzen möglich (kein Zugriff auf portfolio.md)"},
+  {"text": "german_language", "passed": true, "evidence": "Auf Deutsch verfasst"}
+]}

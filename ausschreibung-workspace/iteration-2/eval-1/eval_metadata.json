@@ -1,0 +1,12 @@
+{
+  "eval_id": 1,
+  "eval_name": "leopoldina-hirnorganoide-scrollytelling",
+  "prompt": "Neue Ausschreibung ist reingekommen, bitte analysieren: /Users/saschacollet/Dev/Ausschreibungsskill/Beispiele/TN010 Leopoldina_Hirnorganoide/Incoming/",
+  "assertions": [
+    {"id": "snapshot_fields", "description": "Projekt-Snapshot enthält alle 6 Felder inkl. Bieterfragen-Deadline"},
+    {"id": "designer_scope", "description": "Designer-Abschnitt nennt explizit was Figures gestaltet vs. was der AG liefert"},
+    {"id": "no_duplicate_client_refs", "description": "Nicht mehr als 1 Referenz vom selben Auftraggeber (Leopoldina)"},
+    {"id": "fit_score_hoch", "description": "Fit-Score ist Hoch (Scrollytelling = Kernkompetenz, Leopoldina = bekannter Kunde)"},
+    {"id": "checkpoint_asked", "description": "Checkpoint-Frage wurde gestellt"}
+  ]
+}

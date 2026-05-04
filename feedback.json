@@ -1,0 +1,35 @@
+{
+  "reviews": [
+    {
+      "run_id": "eval-0-with_skill",
+      "feedback": "Statt \"Artenvielfalt\" hätte \"ESYS (Energiesysteme der Zukunft)\" besser als Referenz gepasst, weil wir damit noch besser die Erstellung von Grafiken abdecken. Thematisch passen die anderen beiden besser, aber es handelt sich bei beiden um Webseiten.\nWir können auch mit Photoshop und Affinity Suite arbeiten, das ist also keine Lücke\nEs wäre gut, ein ungefähres Budget zu schätzen.\nInsgesamt deutlich besser also ohne skill\n",
+      "timestamp": "2026-04-30T15:00:31.910Z"
+    },
+    {
+      "run_id": "eval-0-without_skill",
+      "feedback": "Es ist hier gut, dass hier die Eignungsnachweise und Arbeitsproben zusammengefasst beschrieben werden. Auch die Kriterien zu nennen ist gut.\nInsgesamt ist aber der Unterlagen-Teil zu lang\nDie Eckdaten könnten wichtig sein, aber sind zu lang. Wichtig wäre vor allem der Ansprechpartner und der Auftraggeber\nInsgesamt ziemlich schwammig und nicht sehr übersichtlich",
+      "timestamp": "2026-04-30T15:00:31.910Z"
+    },
+    {
+      "run_id": "eval-1-with_skill",
+      "feedback": "Die Frist für Bieterfragen könnte beim Projekt-Snapshot mit der Abgabefrist zusammen genannt werden. Die Angebotsfrist ist hier nicht so wichtig.\nDer Auftragnehmer übernimmt nicht nur die typografische gestaltung sondern auch die technische Umsetzung und die Programmierung - das ist auch für den Designer relevant\nIch würde bei den Referenzen nicht zwei Projekte von der Leopoldina nehmen\nInsgesamt besser also ohne skill\n",
+      "timestamp": "2026-04-30T15:00:31.910Z"
+    },
+    {
+      "run_id": "eval-1-without_skill",
+      "feedback": "\"Inhaltliche Vorbereitung\" kann relevant sein, aber nur wenn sie sehr knapp gehalten ist.\nVorschläge für Rückfragen können eine gute Ergänzung sein!\n\"- Corporate Design der Leopoldina\" ist eigentlich keine technische Anforderung\nInsgesamt schwammig und unübersichtlich",
+      "timestamp": "2026-04-30T15:00:31.910Z"
+    },
+    {
+      "run_id": "eval-2-with_skill",
+      "feedback": "Für den Designer wäre auch interessant, wie sich der Auftraggeber die Funktionalitäten der Plattform vorstellt. bei \"Was erstellt werden soll\" sollte erwähnt werden, dass die Trail Informationen und damit die Karte ziemlich komplex sind (viele Informationen, Filter etc.)\nFür den Developer wäre wichtig, dass \"sämtliche Entitäten der Plattform\" verwaltet werden sollen - das umfassst laut Auftraggeber ziemlich viele Inhalte der Webseite und macht das Projekt ziemlich komplex\nDie Komplexität wäre auch wichtig bei der Empfehlung - ein so komplexes Projekt haben wir bisher noch nicht umgesetzt\ninsgesamt übersichtlich, aber könnte an einigen Stellen etwas ausführlicher sein",
+      "timestamp": "2026-04-30T15:00:31.910Z"
+    },
+    {
+      "run_id": "eval-2-without_skill",
+      "feedback": "Die Zuschlagskriterien und die Vollstandigkeitsprufung sind gut als Inhalt\nDie Übersicht über die geforderten Funktionalitäten macht hier total Sinn, weil das Projekt so umfassend ich\nInsgesamt etwas wenig Bewertung",
+      "timestamp": "2026-04-30T15:00:31.910Z"
+    }
+  ],
+  "status": "complete"
+}

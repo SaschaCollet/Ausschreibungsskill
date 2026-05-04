@@ -1,0 +1,35 @@
+{
+  "reviews": [
+    {
+      "run_id": "eval-0-old_skill",
+      "feedback": "",
+      "timestamp": "2026-05-01T16:00:03.326Z"
+    },
+    {
+      "run_id": "eval-0-with_skill",
+      "feedback": "Gut dass Frist für Bieterfragen oben steht\nDas mit der Barrierefreiheit hätte nicht unbedingt sein müssen, aber ist OK\nRisiken/Lücken Analyse sehr gut",
+      "timestamp": "2026-05-01T16:00:03.326Z"
+    },
+    {
+      "run_id": "eval-1-old_skill",
+      "feedback": "",
+      "timestamp": "2026-05-01T16:00:03.326Z"
+    },
+    {
+      "run_id": "eval-1-with_skill",
+      "feedback": "Portfolio Referenzen decken hier die Anforderungen besser ab!\n\"Risko/Lücken\" sehr gut abgebildet. Nur \"Kein CMS\" würde ich hier nicht aufnehmen\n\"Konzept soll skizzenhaft darlegen wie vorgegangen wird.\" ist etwas schwammig. Hier sollte klar werden, war genau gefordert ist. Z.B. ein Projektplan oder eine erste Skizze der Seite. Wenn das unklar ist, sollte das vermerkt werden.\n",
+      "timestamp": "2026-05-01T16:00:03.326Z"
+    },
+    {
+      "run_id": "eval-2-old_skill",
+      "feedback": "",
+      "timestamp": "2026-05-01T16:00:03.326Z"
+    },
+    {
+      "run_id": "eval-2-with_skill",
+      "feedback": "Snapshot ist hier viel besser als bei \"old skill\"\nAnforderungen für den Developer könnten speziell hier noch etwas ausführlicher sein, weil die Ausschreibung hier auch recht ausführlich ist\nSehr gute Risiko/Lücken Analyse",
+      "timestamp": "2026-05-01T16:00:03.326Z"
+    }
+  ],
+  "status": "complete"
+}

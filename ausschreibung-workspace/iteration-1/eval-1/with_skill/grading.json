@@ -1,0 +1,6 @@
+{"expectations": [
+  {"text": "creates_three_files", "passed": true, "evidence": "Alle 3 Dateien in outputs/ vorhanden"},
+  {"text": "fit_score_hoch", "passed": true, "evidence": "## Fit-Score: Hoch — mit Begründung dass dies faktisch das bereits gewonnene Projekt ist"},
+  {"text": "references_portfolio_project", "passed": true, "evidence": "Hirnorganoide, Artenvielfalt (mit Leopoldina-Zitat) und weitere Projekte namentlich genannt"},
+  {"text": "german_language", "passed": true, "evidence": "Alle Dateien auf Deutsch verfasst"}
+]}

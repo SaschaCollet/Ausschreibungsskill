@@ -1,0 +1,6 @@
+{"expectations": [
+  {"text": "creates_three_files", "passed": true, "evidence": "Alle 3 Dateien in outputs/ vorhanden"},
+  {"text": "developer_section_detailed", "passed": true, "evidence": "PWA explizit als Kernpflicht, Angular/React/Vue.js, nativer App Store Wrapper, MapLibre im Kontext genannt"},
+  {"text": "checklist_complete", "passed": true, "evidence": "11 Tabellenzeilen in der Checkliste"},
+  {"text": "checkpoint_asked", "passed": true, "evidence": "Subagent bestätigte: Checkpoint gestellt mit Fit-Score Mittel"}
+]}

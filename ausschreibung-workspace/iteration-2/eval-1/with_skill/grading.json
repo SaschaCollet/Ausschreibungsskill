@@ -1,0 +1,32 @@
+{
+  "eval_id": 1,
+  "eval_name": "leopoldina-hirnorganoide-scrollytelling",
+  "expectations": [
+    {
+      "text": "Projekt-Snapshot enthält alle 6 Felder inkl. Bieterfragen-Deadline",
+      "passed": true,
+      "evidence": "Alle 6 Felder vorhanden inkl. 'Bieterfragen möglich bis: 23.02.2022'"
+    },
+    {
+      "text": "Designer-Abschnitt nennt explizit was Figures gestaltet vs. was der AG liefert",
+      "passed": true,
+      "evidence": "Scope-Zeile: 'Infografiken und Datenvisualisierungen werden vom wissenschaftlichen Grafiker der Leopoldina erstellt... Figures übernimmt die typographische Gestaltung und die technische Integration.'"
+    },
+    {
+      "text": "Nicht mehr als 1 Referenz vom selben Auftraggeber (Leopoldina)",
+      "passed": true,
+      "evidence": "Nur Artenvielfalt (Leopoldina) als Leopoldina-Referenz; Ref 2: Fraunhofer ENIQ; Ref 3: Universität Freiburg. In Iter-1 waren 2 Leopoldina-Projekte ausgewählt — jetzt korrekt."
+    },
+    {
+      "text": "Fit-Score ist Hoch (Scrollytelling = Kernkompetenz, Leopoldina = bekannter Kunde)",
+      "passed": true,
+      "evidence": "Fit-Score: Hoch"
+    },
+    {
+      "text": "Checkpoint-Frage wurde gestellt",
+      "passed": true,
+      "evidence": "Laut Agent-Summary: 'Fit-Bewertung: Hoch — Figures ist der ideale Kandidat... Soll ich den vollständigen Bewerbungsentwurf erstellen?'"
+    }
+  ],
+  "pass_rate": 1.0
+}

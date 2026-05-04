@@ -1,0 +1,23 @@
+{
+  "skill_name": "ausschreibung",
+  "evals": [
+    {
+      "id": 0,
+      "prompt": "Bitte analysiere diese Ausschreibung: /Users/saschacollet/Dev/Ausschreibungsskill/Beispiele/TN017 UmweltBundesamt/Incoming/",
+      "expected_output": "Phase 1: 3 Markdown-Dateien (01_zusammenfassung.md, 02_fit-bewertung.md, 03_checkliste.md) im Ausschreibungsordner. Zusammenfassung strukturiert in Projekt-Snapshot + 3 Rollen. Fit-Score gesetzt. Checkliste mit Tabelle.",
+      "files": []
+    },
+    {
+      "id": 1,
+      "prompt": "Neue Ausschreibung ist reingekommen, bitte analysieren: /Users/saschacollet/Dev/Ausschreibungsskill/Beispiele/TN010 Leopoldina_Hirnorganoide/Incoming/",
+      "expected_output": "Phase 1: 3 Markdown-Dateien. Fit-Score Hoch (Scrollytelling-Microsite = Figures-Kernkompetenz, Leopoldina = bekannter Kunde). Checkpoint-Frage gestellt.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Kannst du dir mal die Ausschreibungsunterlagen von GreenTrails ansehen? /Users/saschacollet/Dev/Ausschreibungsskill/Beispiele/TN042 GreenTrails/Incoming/",
+      "expected_output": "Phase 1: 3 Markdown-Dateien. Developer-Abschnitt detailliert (PWA, MapLibre, Tech-Stack-Anforderungen). Fit-Score Mittel oder Hoch. Checkliste vollständig.",
+      "files": []
+    }
+  ]
+}

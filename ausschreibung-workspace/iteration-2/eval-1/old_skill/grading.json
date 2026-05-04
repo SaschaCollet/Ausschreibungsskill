@@ -1,0 +1,33 @@
+{
+  "eval_id": 1,
+  "eval_name": "leopoldina-hirnorganoide-scrollytelling",
+  "note": "Baseline = Iteration-1 with_skill output",
+  "expectations": [
+    {
+      "text": "Projekt-Snapshot enthält alle 6 Felder inkl. Bieterfragen-Deadline",
+      "passed": false,
+      "evidence": "Iteration-1: Kein Bieterfragen-Feld im Snapshot"
+    },
+    {
+      "text": "Designer-Abschnitt nennt explizit was Figures gestaltet vs. was der AG liefert",
+      "passed": false,
+      "evidence": "Iteration-1: Kein Scope-Feld; nur allgemeine Stil/Zielgruppe/Freiheits-Angaben"
+    },
+    {
+      "text": "Nicht mehr als 1 Referenz vom selben Auftraggeber (Leopoldina)",
+      "passed": false,
+      "evidence": "Iteration-1: Hirnorganoide (Leopoldina) UND Artenvielfalt (Leopoldina) als Referenzen — 2 Leopoldina-Projekte"
+    },
+    {
+      "text": "Fit-Score ist Hoch (Scrollytelling = Kernkompetenz, Leopoldina = bekannter Kunde)",
+      "passed": true,
+      "evidence": "Iteration-1: Fit-Score Hoch"
+    },
+    {
+      "text": "Checkpoint-Frage wurde gestellt",
+      "passed": true,
+      "evidence": "Iteration-1: Checkpoint wurde gestellt"
+    }
+  ],
+  "pass_rate": 0.4
+}

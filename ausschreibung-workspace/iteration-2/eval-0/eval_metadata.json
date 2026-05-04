@@ -1,0 +1,14 @@
+{
+  "eval_id": 0,
+  "eval_name": "umweltbundesamt-ipcc-grafiken",
+  "prompt": "Bitte analysiere diese Ausschreibung: /Users/saschacollet/Dev/Ausschreibungsskill/Beispiele/TN017 UmweltBundesamt/Incoming/",
+  "assertions": [
+    {"id": "snapshot_fields", "description": "Projekt-Snapshot enthält alle 6 Felder: Auftraggeber, Was erstellt werden soll, Budget, Abgabefrist, Bieterfragen, Vergabeart"},
+    {"id": "budget_estimate", "description": "Budget-Zeile enthält eine interne Schätzung da kein Budget angegeben"},
+    {"id": "designer_output_format", "description": "Designer-Abschnitt enthält Output-Format und Scope (statisch/Print vs. interaktiv)"},
+    {"id": "no_duplicate_client_refs", "description": "Referenzprojekte kommen von unterschiedlichen Auftraggebern (kein Auftraggeber doppelt)"},
+    {"id": "photoshop_not_gap", "description": "Photoshop/Adobe-Suite wird nicht als Lücke/Risiko gelistet"},
+    {"id": "fit_score_set", "description": "Fit-Score ist gesetzt (Hoch/Mittel/Niedrig)"},
+    {"id": "checkpoint_asked", "description": "Checkpoint-Frage wurde gestellt"}
+  ]
+}

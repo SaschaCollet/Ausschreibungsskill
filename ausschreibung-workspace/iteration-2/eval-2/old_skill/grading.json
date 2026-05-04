@@ -1,0 +1,33 @@
+{
+  "eval_id": 2,
+  "eval_name": "greentrails-progressive-web-app",
+  "note": "Baseline = Iteration-1 with_skill output",
+  "expectations": [
+    {
+      "text": "Was-erstellt-werden-soll nennt Kernfunktionen (Filter, Account-Management, Admin-Bereich etc.)",
+      "passed": false,
+      "evidence": "Iteration-1: Kurze Aufzählung der Funktionsbereiche ohne Filter/Status-Ampel-Details"
+    },
+    {
+      "text": "Developer-Abschnitt nennt Admin-/CMS-Bereich und Verwaltung aller Plattform-Entitäten",
+      "passed": true,
+      "evidence": "Iteration-1: Admin-/CMS-Bereich und meiste Integrationen aufgeführt"
+    },
+    {
+      "text": "Fit-Bewertung enthält Einschätzung zur Projektgröße vs. Figures-Teamkapazität",
+      "passed": true,
+      "evidence": "Iteration-1 Risiken: 'Projektgröße: Eine vollständige PWA... ist ein 60–120-Tage-Projekt. Das ist am oberen Ende dessen, was Figures... stemmen kann.'"
+    },
+    {
+      "text": "Fit-Score ist gesetzt",
+      "passed": true,
+      "evidence": "Iteration-1: Fit-Score Mittel"
+    },
+    {
+      "text": "Checkpoint-Frage wurde gestellt",
+      "passed": true,
+      "evidence": "Iteration-1: Checkpoint wurde gestellt"
+    }
+  ],
+  "pass_rate": 0.8
+}

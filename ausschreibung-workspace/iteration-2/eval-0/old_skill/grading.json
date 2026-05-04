@@ -1,0 +1,43 @@
+{
+  "eval_id": 0,
+  "eval_name": "umweltbundesamt-ipcc-grafiken",
+  "note": "Baseline = Iteration-1 with_skill output",
+  "expectations": [
+    {
+      "text": "Projekt-Snapshot enthält alle 6 Felder: Auftraggeber, Was erstellt werden soll, Budget, Abgabefrist, Bieterfragen, Vergabeart",
+      "passed": false,
+      "evidence": "Iteration-1: Kein 'Bieterfragen möglich bis' Feld; nur 5 Felder vorhanden"
+    },
+    {
+      "text": "Budget-Zeile enthält eine interne Schätzung da kein Budget angegeben",
+      "passed": false,
+      "evidence": "Iteration-1: Nur 'Nicht angegeben' — keine interne Schätzung"
+    },
+    {
+      "text": "Designer-Abschnitt enthält Output-Format und Scope (statisch/Print vs. interaktiv)",
+      "passed": false,
+      "evidence": "Iteration-1: Kein Scope- oder Output-Format-Feld im Designer-Abschnitt"
+    },
+    {
+      "text": "Referenzprojekte kommen von unterschiedlichen Auftraggebern (kein Auftraggeber doppelt)",
+      "passed": true,
+      "evidence": "Iteration-1: MDR, Leopoldina, Fraunhofer — unterschiedliche Auftraggeber"
+    },
+    {
+      "text": "Photoshop/Adobe-Suite wird nicht als Lücke/Risiko gelistet",
+      "passed": false,
+      "evidence": "Iteration-1 Risiken: 'Adobe-Suite als Pflichtformat: Figures arbeitet nativ mit Figma und Web-Technologien. Die Kompatibilität mit Photoshop/InDesign/Illustrator ist grundsätzlich gewährleistet, muss aber klar kommuniziert werden.' — klingt nach Lücke"
+    },
+    {
+      "text": "Fit-Score ist gesetzt (Hoch/Mittel/Niedrig)",
+      "passed": true,
+      "evidence": "Iteration-1: Fit-Score Hoch"
+    },
+    {
+      "text": "Checkpoint-Frage wurde gestellt",
+      "passed": true,
+      "evidence": "Iteration-1: Checkpoint wurde gestellt"
+    }
+  ],
+  "pass_rate": 0.43
+}

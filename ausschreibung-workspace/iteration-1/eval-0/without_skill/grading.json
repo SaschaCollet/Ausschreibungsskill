@@ -1,0 +1,9 @@
+{"expectations": [
+  {"text": "creates_summary_file", "passed": true, "evidence": "baseline_zusammenfassung.md vorhanden (anderer Dateiname ohne Skill-Struktur)"},
+  {"text": "creates_fit_file", "passed": true, "evidence": "baseline_fit.md vorhanden"},
+  {"text": "creates_checklist_file", "passed": true, "evidence": "baseline_checkliste.md vorhanden"},
+  {"text": "summary_has_four_sections", "passed": false, "evidence": "Keine strukturierten Rollen-Abschnitte (Designer/Developer/PM) — allgemeine Zusammenfassung ohne Zielgruppen-Segmentierung"},
+  {"text": "fit_score_set", "passed": true, "evidence": "Fit-Bewertung HOCH gesetzt"},
+  {"text": "checklist_has_table", "passed": true, "evidence": "Checkliste vorhanden"},
+  {"text": "checkpoint_asked", "passed": false, "evidence": "Kein Checkpoint — kein zweistufiger Workflow ohne Skill"}
+]}

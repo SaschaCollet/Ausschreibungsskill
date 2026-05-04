@@ -1,0 +1,11 @@
+{
+  "eval_id": 2,
+  "eval_name": "greentrails-pwa",
+  "prompt": "Kannst du dir mal die Ausschreibungsunterlagen von GreenTrails ansehen? /Users/saschacollet/Dev/Ausschreibungsskill/Beispiele/TN042 GreenTrails/Incoming/",
+  "assertions": [
+    {"name": "creates_three_files", "check": "Alle 3 Phase-1-Dateien existieren in outputs/"},
+    {"name": "developer_section_detailed", "check": "01_zusammenfassung.md Für den Developer enthält PWA-Anforderungen"},
+    {"name": "checklist_complete", "check": "03_checkliste.md enthält Tabelle mit mehreren Einträgen"},
+    {"name": "checkpoint_asked", "check": "Checkpoint-Frage gestellt"}
+  ]
+}

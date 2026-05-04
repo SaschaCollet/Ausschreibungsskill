@@ -1,0 +1,14 @@
+{
+  "eval_id": 0,
+  "eval_name": "umweltbundesamt-dataviz",
+  "prompt": "Bitte analysiere diese Ausschreibung: /Users/saschacollet/Dev/Ausschreibungsskill/Beispiele/TN017 UmweltBundesamt/Incoming/",
+  "assertions": [
+    {"name": "creates_summary_file", "check": "01_zusammenfassung.md existiert in outputs/"},
+    {"name": "creates_fit_file", "check": "02_fit-bewertung.md existiert in outputs/"},
+    {"name": "creates_checklist_file", "check": "03_checkliste.md existiert in outputs/"},
+    {"name": "summary_has_four_sections", "check": "01_zusammenfassung.md enthält alle 4 Abschnitte: Projekt-Snapshot, Für den Designer, Für den Developer, Für den Projektmanager"},
+    {"name": "fit_score_set", "check": "02_fit-bewertung.md enthält Fit-Score (Hoch/Mittel/Niedrig)"},
+    {"name": "checklist_has_table", "check": "03_checkliste.md enthält eine Markdown-Tabelle"},
+    {"name": "checkpoint_asked", "check": "Skill stellt Checkpoint-Frage nach Phase 1"}
+  ]
+}

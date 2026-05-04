@@ -1,0 +1,32 @@
+{
+  "eval_id": 2,
+  "eval_name": "greentrails-progressive-web-app",
+  "expectations": [
+    {
+      "text": "Was-erstellt-werden-soll nennt Kernfunktionen (Filter, Account-Management, Admin-Bereich etc.)",
+      "passed": true,
+      "evidence": "Trail-Informationen mit Filter und Status-Ampel, interaktive Karte, Mitteilungsfunktion, Event-Modul, Blog-Bereich mit Kommentarfunktion, Account- & Rollenmanagement, vollständiger Admin-/CMS-Bereich sowie Feedback-Funktion — alle Kernfunktionen genannt"
+    },
+    {
+      "text": "Developer-Abschnitt nennt Admin-/CMS-Bereich und Verwaltung aller Plattform-Entitäten",
+      "passed": true,
+      "evidence": "Integrationen-Zeile listet: Account- und Rollenmanagement, Admin-/CMS-Bereich, Mitteilungsfunktion, Event-System, Blog mit Kommentaren, Feedback-Funktion, Datenanalyse/Reporting"
+    },
+    {
+      "text": "Fit-Bewertung enthält Einschätzung zur Projektgröße vs. Figures-Teamkapazität",
+      "passed": true,
+      "evidence": "Risiken: 'Projektgröße kritisch: Eine vollständige PWA mit allen genannten Modulen entspricht 60–120 Tagen Gesamtaufwand — am oberen Ende dessen, was ein 4-Personen-Team neben laufenden Projekten stemmen kann.'"
+    },
+    {
+      "text": "Fit-Score ist gesetzt",
+      "passed": true,
+      "evidence": "Fit-Score: Mittel"
+    },
+    {
+      "text": "Checkpoint-Frage wurde gestellt",
+      "passed": true,
+      "evidence": "Laut Agent-Summary: 'Fit-Bewertung: Mittel — Mit Vorbehalt bewerben... Soll ich den vollständigen Bewerbungsentwurf erstellen?'"
+    }
+  ],
+  "pass_rate": 1.0
+}
