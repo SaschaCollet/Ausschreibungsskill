@@ -74,14 +74,30 @@
 
 ## Traceability
 
-*(Wird vom Roadmapper ausgefüllt)*
-
-| REQ-ID | Phase |
-|--------|-------|
-| FETCH-01 – FETCH-04 | Phase 1 |
-| DEDUP-01 – DEDUP-03 | Phase 1 |
-| FILTER-01 – FILTER-02 | Phase 1 |
-| TRIAGE-01 – TRIAGE-04 | Phase 2 |
-| DIGEST-01 – DIGEST-05 | Phase 2 |
-| ANALYSIS-01 – ANALYSIS-03 | Phase 3 |
-| INFRA-01 – INFRA-04 | Phase 1 |
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| FETCH-01 | Phase 1 | Pending |
+| FETCH-02 | Phase 1 | Pending |
+| FETCH-03 | Phase 1 | Pending |
+| FETCH-04 | Phase 1 | Pending |
+| DEDUP-01 | Phase 1 | Pending |
+| DEDUP-02 | Phase 1 | Pending |
+| DEDUP-03 | Phase 1 | Pending |
+| FILTER-01 | Phase 1 | Pending |
+| FILTER-02 | Phase 1 | Pending |
+| INFRA-01 | Phase 1 | Pending |
+| INFRA-02 | Phase 1 | Pending |
+| INFRA-03 | Phase 1 | Pending |
+| INFRA-04 | Phase 1 | Pending |
+| TRIAGE-01 | Phase 2 | Pending |
+| TRIAGE-02 | Phase 2 | Pending |
+| TRIAGE-03 | Phase 2 | Pending |
+| TRIAGE-04 | Phase 2 | Pending |
+| DIGEST-01 | Phase 2 | Pending |
+| DIGEST-02 | Phase 2 | Pending |
+| DIGEST-03 | Phase 2 | Pending |
+| DIGEST-04 | Phase 2 | Pending |
+| DIGEST-05 | Phase 2 | Pending |
+| ANALYSIS-01 | Phase 3 | Pending |
+| ANALYSIS-02 | Phase 3 | Pending |
+| ANALYSIS-03 | Phase 3 | Pending |
