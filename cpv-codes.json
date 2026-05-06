@@ -1,0 +1,9 @@
+{
+  "_comment": "EU CPV taxonomy 2008/2023. Figures-relevant service domains. Update via commit — no redeploy needed.",
+  "_last_reviewed": "2026-05-06",
+  "prefixes": ["79*", "92*", "73*"],
+  "specific_additions": [
+    "72212000",
+    "80000000"
+  ]
+}
