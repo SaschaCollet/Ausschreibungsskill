@@ -1,0 +1,26 @@
+{
+  "name": "ausschreibungs-scanner",
+  "version": "0.1.0",
+  "private": true,
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "tsx src/runner.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "better-sqlite3": "12.9.0",
+    "zod": "^3",
+    "@anthropic-ai/sdk": "0.94.0",
+    "nodemailer": "8.0.7"
+  },
+  "devDependencies": {
+    "typescript": "6.0.3",
+    "tsx": "4.21.0",
+    "vitest": "^2",
+    "@types/node": "^22",
+    "@types/better-sqlite3": "^7",
+    "@types/nodemailer": "^6"
+  }
+}
