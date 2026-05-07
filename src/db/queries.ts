@@ -129,3 +129,72 @@ export function finalizeRun(
     Number(runId)
   );
 }
+
+// ── Phase 2: Triage ────────────────────────────────────────────────────────
+
+export interface TriageRecord {
+  runId: number | bigint;
+  nd: string;
+  score: number | null;
+  rationale: string | null;
+  triageOk: boolean;
+}
+
+/**
+ * Batch-insert triage results in a single transaction.
+ * A record with triageOk=false stores score=null and rationale=null (TRIAGE-03 audit trail).
+ * Uses parameterized named statements — no string interpolation (T-02-01-B).
+ */
+export function saveTriageResults(db: Database.Database, records: TriageRecord[]): void {
+  if (records.length === 0) return;
+  const insert = db.prepare(`
+    INSERT INTO triage_results (run_id, nd, score, rationale, triage_ok, created_at)
+    VALUES (@runId, @nd, @score, @rationale, @triageOk, @createdAt)
+  `);
+  const insertMany = db.transaction((recs: TriageRecord[]) => {
+    for (const r of recs) {
+      insert.run({
+        runId: Number(r.runId),
+        nd: r.nd,
+        score: r.score ?? null,
+        rationale: r.rationale ?? null,
+        triageOk: r.triageOk ? 1 : 0,
+        createdAt: new Date().toISOString(),
+      });
+    }
+  });
+  insertMany(records);
+}
+
+/**
+ * Update Phase 2 token-usage and triage-count stats on the runs row.
+ * Called once per run after the triage loop completes.
+ */
+export function updateRunTriageStats(
+  db: Database.Database,
+  runId: number | bigint,
+  stats: {
+    triagedCount: number;
+    okCount: number;
+    inputTokens: number;
+    outputTokens: number;
+    costUsd: number;
+  }
+): void {
+  db.prepare(`
+    UPDATE runs SET
+      triage_count        = ?,
+      triage_ok_count     = ?,
+      haiku_input_tokens  = ?,
+      haiku_output_tokens = ?,
+      haiku_cost_usd      = ?
+    WHERE id = ?
+  `).run(
+    stats.triagedCount,
+    stats.okCount,
+    stats.inputTokens,
+    stats.outputTokens,
+    stats.costUsd,
+    Number(runId)
+  );
+}

@@ -49,7 +49,33 @@ export function openDb(dbPath: string): Database.Database {
       locked_at  TEXT NOT NULL,
       pid        INTEGER NOT NULL
     );
+
+    CREATE TABLE IF NOT EXISTS triage_results (
+      id          INTEGER PRIMARY KEY AUTOINCREMENT,
+      run_id      INTEGER NOT NULL REFERENCES runs(id),
+      nd          TEXT    NOT NULL REFERENCES seen_notices(nd),
+      score       INTEGER,
+      rationale   TEXT,
+      triage_ok   INTEGER NOT NULL DEFAULT 1,
+      created_at  TEXT NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_triage_results_nd    ON triage_results(nd);
+    CREATE INDEX IF NOT EXISTS idx_triage_results_run   ON triage_results(run_id);
+    CREATE INDEX IF NOT EXISTS idx_triage_results_score ON triage_results(score);
   `);
+
+  // Migration for existing DBs: add Phase 2 columns to runs table.
+  // Each ALTER TABLE is wrapped in try/catch — throws if column already exists.
+  const phase2Cols = [
+    'ALTER TABLE runs ADD COLUMN triage_count INTEGER',
+    'ALTER TABLE runs ADD COLUMN triage_ok_count INTEGER',
+    'ALTER TABLE runs ADD COLUMN haiku_input_tokens INTEGER',
+    'ALTER TABLE runs ADD COLUMN haiku_output_tokens INTEGER',
+    'ALTER TABLE runs ADD COLUMN haiku_cost_usd REAL',
+  ];
+  for (const stmt of phase2Cols) {
+    try { db.exec(stmt); } catch { /* column already exists */ }
+  }
 
   return db;
 }
