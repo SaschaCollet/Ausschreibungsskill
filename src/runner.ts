@@ -4,11 +4,16 @@ import {
   acquireJobLock, releaseJobLock,
   markNoticeSeen,
   createRun, finalizeRun,
+  saveTriageResults, updateRunTriageStats,
 } from './db/queries.js';
 import { fetchNewNotices } from './fetcher/index.js';
 import { applyHardFilters } from './filter/index.js';
+import { createGmailTransport, verifySmtp, sendDigestEmail } from './email/smtp.js';
+import { triageNotices } from './triage/index.js';
+import { buildDigest } from './email/digest.js';
 import type { RawNotice } from './fetcher/types.js';
 import type { NoticeRecord } from './db/queries.js';
+import type { TriageOutput } from './triage/index.js';
 
 /**
  * Detect first run by checking if seen_notices is empty.
@@ -48,12 +53,13 @@ function toNoticeRecord(notice: RawNotice): NoticeRecord {
 /**
  * Main pipeline entry point.
  *
- * Flow: acquire lock → detect first run → fetch → filter → store → finalize run → release lock → exit(0)
+ * Flow: SMTP auth → acquire lock → detect first run → fetch → filter →
+ *       triage → store → email → finalize run → release lock → exit(0)
  *
  * Exit codes:
  *   0 — clean run (success or empty result)
  *   1 — job already locked (concurrent run blocked — Railway will retry next schedule)
- *   2 — unrecoverable error (DB open failure, pipeline error)
+ *   2 — unrecoverable error (SMTP auth failure, DB open failure, pipeline error)
  *
  * CRITICAL: db.close() MUST be called before process.exit() to checkpoint WAL data.
  */
@@ -62,6 +68,17 @@ async function main(): Promise<void> {
 
   console.log(`[runner] Starting — DB: ${config.dbPath}`);
   console.log(`[runner] PID: ${process.pid}, UTC: ${new Date().toISOString()}`);
+
+  // DIGEST-05: Verify SMTP auth before any pipeline work — exit immediately if auth fails
+  const transporter = createGmailTransport(config.gmailUser, config.gmailAppPassword);
+  try {
+    await verifySmtp(transporter);
+    console.log('[runner] SMTP auth verified');
+  } catch (err) {
+    console.error('[runner] FATAL: Gmail SMTP auth failed:', err);
+    console.error('[runner] Check GMAIL_USER and GMAIL_APP_PASSWORD env vars.');
+    process.exit(2);
+  }
 
   // Open DB — will throw SQLITE_CANTOPEN if /data Volume not mounted
   let db: ReturnType<typeof openDb>;
@@ -117,7 +134,42 @@ async function main(): Promise<void> {
       console.log(`[runner] Stored ${toStore.length} new notices in seen_notices`);
     }
 
-    // Finalize run record (FETCH-04: log totalAvailable vs totalFetched)
+    // Phase: Triage — score each surviving notice with Haiku (TRIAGE-01 through TRIAGE-04)
+    let triageOutput: TriageOutput | null = null;
+    if (toStore.length > 0) {
+      console.log(`[runner] Triaging ${toStore.length} notices with Haiku...`);
+      triageOutput = await triageNotices(toStore, config.anthropicApiKey, runId);
+      const okCount = triageOutput.records.filter(r => r.triageOk).length;
+      console.log(`[runner] Triage complete — ok=${okCount} failed=${toStore.length - okCount}`);
+
+      // Persist triage results
+      saveTriageResults(db, triageOutput.records);
+    } else {
+      console.log('[runner] No new notices to triage');
+    }
+
+    // Phase: Email digest (DIGEST-01 through DIGEST-04)
+    const noticesAndTriage = triageOutput
+      ? toStore.map((notice, i) => ({ notice, triage: triageOutput!.records[i] }))
+      : [];
+
+    const emptyStats = { totalInputTokens: 0, totalOutputTokens: 0, estimatedCostUsd: 0 };
+    const digestStats = triageOutput?.stats ?? emptyStats;
+    const digest = buildDigest(
+      noticesAndTriage,
+      digestStats,
+      new Date().toISOString().slice(0, 10),
+    );
+
+    try {
+      await sendDigestEmail(transporter, config, digest);
+      console.log(`[runner] Digest sent: "${digest.subject}"`);
+    } catch (err) {
+      console.error('[runner] WARNING: Email send failed (run data preserved):', err);
+      // Non-fatal: triage results and run stats are already persisted
+    }
+
+    // Finalize run record with Phase 2 token stats
     finalizeRun(db, runId, {
       finishedAt: new Date().toISOString(),
       totalAvailable: fetchResult.totalAvailable,
@@ -127,13 +179,25 @@ async function main(): Promise<void> {
       stored: toStore.length,
     });
 
+    if (triageOutput) {
+      updateRunTriageStats(db, runId, {
+        triagedCount: triageOutput.records.length,
+        okCount: triageOutput.records.filter(r => r.triageOk).length,
+        inputTokens: triageOutput.stats.totalInputTokens,
+        outputTokens: triageOutput.stats.totalOutputTokens,
+        costUsd: triageOutput.stats.estimatedCostUsd,
+      });
+    }
+
     console.log(
       `[runner] Run complete — ` +
       `available=${fetchResult.totalAvailable} ` +
       `fetched=${fetchResult.totalFetched} ` +
       `new=${fetchResult.notices.length} ` +
       `kept=${toStore.length} ` +
-      `dropped=${filterResult.dropped.length}`
+      `dropped=${filterResult.dropped.length} ` +
+      `triaged=${triageOutput?.records.length ?? 0} ` +
+      `cost=$${triageOutput?.stats.estimatedCostUsd.toFixed(4) ?? '0.0000'}`
     );
 
   } catch (err) {

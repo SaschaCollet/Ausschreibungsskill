@@ -2,14 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import type { NoticeRecord } from '../db/queries.js';
 
 // --- Mock Anthropic SDK ---
-const mockParse = vi.fn();
+const mockCreate = vi.fn();
 vi.mock('@anthropic-ai/sdk', () => ({
   default: vi.fn().mockImplementation(() => ({
-    messages: { parse: mockParse },
+    messages: { create: mockCreate },
   })),
-}));
-vi.mock('@anthropic-ai/sdk/helpers/zod', () => ({
-  zodOutputFormat: vi.fn().mockReturnValue({ type: 'zod' }),
 }));
 
 import { triageNotices } from './index.js';
@@ -23,14 +20,18 @@ const makeNotice = (nd: string): NoticeRecord => ({
   budget: 50000,
 });
 
+function makeToolResponse(score: number, rationale: string, inputTokens: number, outputTokens: number) {
+  return {
+    content: [{ type: 'tool_use', id: 'tu_1', name: 'score_notice', input: { score, rationale } }],
+    usage: { input_tokens: inputTokens, output_tokens: outputTokens },
+  };
+}
+
 describe('triageNotices', () => {
-  beforeEach(() => { mockParse.mockReset(); });
+  beforeEach(() => { mockCreate.mockReset(); });
 
   it('TRIAGE-01: returns score and rationale for a successful call', async () => {
-    mockParse.mockResolvedValueOnce({
-      parsed_output: { score: 8, rationale: 'Passt perfekt. Hohe Relevanz.' },
-      usage: { input_tokens: 700, output_tokens: 80 },
-    });
+    mockCreate.mockResolvedValueOnce(makeToolResponse(8, 'Passt perfekt. Hohe Relevanz.', 700, 80));
     const result = await triageNotices([makeNotice('100-2026')], 'test-key', 1);
     expect(result.records).toHaveLength(1);
     expect(result.records[0].score).toBe(8);
@@ -39,7 +40,7 @@ describe('triageNotices', () => {
   });
 
   it('TRIAGE-03: API error produces null result without throwing', async () => {
-    mockParse.mockRejectedValueOnce(new Error('Rate limit exceeded'));
+    mockCreate.mockRejectedValueOnce(new Error('Rate limit exceeded'));
     const result = await triageNotices([makeNotice('200-2026')], 'test-key', 1);
     expect(result.records).toHaveLength(1);
     expect(result.records[0].score).toBeNull();
@@ -47,12 +48,9 @@ describe('triageNotices', () => {
   });
 
   it('TRIAGE-03: error on one notice does not stop processing of subsequent notices', async () => {
-    mockParse
+    mockCreate
       .mockRejectedValueOnce(new Error('Temporary error'))
-      .mockResolvedValueOnce({
-        parsed_output: { score: 3, rationale: 'Wenig relevant. IT-Dienst.' },
-        usage: { input_tokens: 600, output_tokens: 70 },
-      });
+      .mockResolvedValueOnce(makeToolResponse(3, 'Wenig relevant. IT-Dienst.', 600, 70));
     const result = await triageNotices(
       [makeNotice('300-2026'), makeNotice('301-2026')], 'test-key', 1,
     );
@@ -63,15 +61,9 @@ describe('triageNotices', () => {
   });
 
   it('TRIAGE-04: accumulates token usage across multiple notices', async () => {
-    mockParse
-      .mockResolvedValueOnce({
-        parsed_output: { score: 7, rationale: 'Relevant. Webdesign.' },
-        usage: { input_tokens: 700, output_tokens: 80 },
-      })
-      .mockResolvedValueOnce({
-        parsed_output: { score: 2, rationale: 'Kaum relevant. Bau.' },
-        usage: { input_tokens: 650, output_tokens: 75 },
-      });
+    mockCreate
+      .mockResolvedValueOnce(makeToolResponse(7, 'Relevant. Webdesign.', 700, 80))
+      .mockResolvedValueOnce(makeToolResponse(2, 'Kaum relevant. Bau.', 650, 75));
     const result = await triageNotices(
       [makeNotice('400-2026'), makeNotice('401-2026')], 'test-key', 1,
     );

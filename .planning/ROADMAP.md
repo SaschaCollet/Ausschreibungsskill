@@ -37,7 +37,13 @@ A four-phase build from raw pipeline plumbing to a fully operational, self-tunin
   2. Tier A entries (score >= 7) and Tier B entries (score 4-6) are visually distinct sections in the HTML email; notices scoring < 4 do not appear
   3. On a day with zero qualifying notices, a confirmation email is sent confirming the job ran (no silent failure)
   4. Gmail SMTP authentication is verified at job startup — the job exits before any API work if auth fails
-**Plans**: TBD
+**Plans**: 5 plans
+Plans:
+- [ ] 02-01-PLAN.md — DB schema migration (triage_results table) + config validation
+- [ ] 02-02-PLAN.md — Haiku triage module (prompt, structured output, error isolation, token tracking)
+- [ ] 02-03-PLAN.md — Gmail SMTP transport module (createTransport, verifySmtp, sendDigestEmail)
+- [ ] 02-04-PLAN.md — HTML digest builder (tier grouping, notice cards, zero-notice confirmation)
+- [ ] 02-05-PLAN.md — Runner integration + end-to-end checkpoint
 **UI hint**: yes
 
 ### Phase 3: Full Analysis Integration
@@ -68,6 +74,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Pipeline Foundation | 0/? | Not started | - |
-| 2. Triage and Digest | 0/? | Not started | - |
+| 2. Triage and Digest | 0/5 | Planned | - |
 | 3. Full Analysis Integration | 0/? | Not started | - |
 | 4. Tuning and Hardening | 0/? | Not started | - |
