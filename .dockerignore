@@ -1,0 +1,13 @@
+node_modules
+dist
+.env
+*.db
+*.db-wal
+*.db-shm
+.planning
+docs
+Portfolio
+Beispiele
+Test-Ausschreibung
+ausschreibung-workspace
+feedback*.json
