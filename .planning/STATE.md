@@ -5,16 +5,16 @@
 See: .planning/PROJECT.md (updated 2026-05-04)
 
 **Core value:** Figures verpasst keine relevante öffentliche Ausschreibung mehr — die Pipeline läuft täglich ohne manuellen Aufwand.
-**Current focus:** Phase 1 — Pipeline Foundation
+**Current focus:** Phase 2 — Triage and Digest
 
 ## Current Position
 
-Phase: 1 of 4 (Pipeline Foundation)
-Plan: 0 of ? in current phase
-Status: Ready to plan
-Last activity: 2026-05-04 — Roadmap and state initialized
+Phase: 2 of 4 (Triage and Digest)
+Plan: 2 of 5 in current phase
+Status: In progress — Wave 2 (02-02 complete, 02-03 complete, 02-04 and 02-05 pending)
+Last activity: 2026-05-07 — Phase 2 Plan 02 complete (Haiku triage module)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██░░░░░░░░] 20%
 
 ## Performance Metrics
 
@@ -46,6 +46,9 @@ Recent decisions affecting current work:
 - Init: better-sqlite3 with WAL mode on Railway Volume at /data/state.db
 - Init: Haiku for triage, Sonnet for full analysis (cost control)
 - Init: Gmail App Password SMTP, not OAuth2 (no additional service needed)
+- 02-02: Sequential for-of loop (no Promise.all) prevents concurrent Anthropic requests — satisfies T-02-02-C rate-limit threat
+- 02-02: messages.parse + zodOutputFormat ensures Zod-validated structured output; prompt injection caught as triageOk=false (T-02-02-A)
+- 02-02: apiKey never logged — only model, tokens, nd appear in console output (T-02-02-B)
 
 ### Pending Todos
 
@@ -66,6 +69,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-04
-Stopped at: Roadmap created, all files written — ready to plan Phase 1
+Last session: 2026-05-07
+Stopped at: Phase 2 Plan 02 complete — Haiku triage module (prompt, index, tests) committed
 Resume file: None
