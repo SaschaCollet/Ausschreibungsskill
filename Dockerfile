@@ -11,4 +11,4 @@ COPY . .
 # /data comes from Railway Volume mount — do NOT mkdir /data here
 # If Volume not attached, runner.ts exits(2) with SQLITE_CANTOPEN message
 
-CMD ["./node_modules/.bin/tsx", "src/runner.ts"]
+CMD ["sh", "-c", "npx tsx src/runner.ts 2>&1"]
