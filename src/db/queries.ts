@@ -68,7 +68,19 @@ export function markNoticeSeen(db: Database.Database, notices: NoticeRecord[]): 
  * A concurrent INSERT throws a UNIQUE constraint violation if row exists.
  * This satisfies T-02-02: prevents two cron invocations running simultaneously.
  */
+const LOCK_STALE_MS = 2 * 60 * 60 * 1000; // 2 hours
+
 export function acquireJobLock(db: Database.Database): boolean {
+  // Clear stale lock if previous run was killed before releaseJobLock()
+  const existing = db.prepare('SELECT locked_at FROM job_lock WHERE id = 1').get() as { locked_at: string } | undefined;
+  if (existing) {
+    const age = Date.now() - new Date(existing.locked_at).getTime();
+    if (age > LOCK_STALE_MS) {
+      console.log(`[lock] Clearing stale lock (age: ${Math.round(age / 60000)}m)`);
+      db.prepare('DELETE FROM job_lock WHERE id = 1').run();
+    }
+  }
+
   try {
     db.prepare(
       'INSERT INTO job_lock (id, locked_at, pid) VALUES (1, ?, ?)'

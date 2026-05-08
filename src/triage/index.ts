@@ -38,40 +38,38 @@ export async function triageNotices(
   let totalInputTokens = 0;
   let totalOutputTokens = 0;
 
-  for (const notice of notices) {
-    try {
-      const response = await client.messages.create({
-        model: 'claude-haiku-4-5',
-        max_tokens: 256,
-        system: TRIAGE_SYSTEM_PROMPT,
-        messages: [{ role: 'user', content: buildNoticePrompt(notice) }],
-        tools: [SCORE_TOOL],
-        tool_choice: { type: 'tool', name: 'score_notice' },
-      });
+  // Process in parallel batches of 5 to stay within the 60-min Railway cron timeout
+  // (sequential at ~12 sec/call × 305 notices ≈ 61 min exceeds the limit)
+  const BATCH_SIZE = 5;
+  for (let i = 0; i < notices.length; i += BATCH_SIZE) {
+    const batch = notices.slice(i, i + BATCH_SIZE);
+    const results = await Promise.allSettled(
+      batch.map(notice =>
+        client.messages.create({
+          model: 'claude-haiku-4-5',
+          max_tokens: 256,
+          system: TRIAGE_SYSTEM_PROMPT,
+          messages: [{ role: 'user', content: buildNoticePrompt(notice) }],
+          tools: [SCORE_TOOL],
+          tool_choice: { type: 'tool', name: 'score_notice' },
+        })
+      )
+    );
 
-      totalInputTokens  += response.usage.input_tokens;
-      totalOutputTokens += response.usage.output_tokens;
-
-      const toolBlock = response.content.find(b => b.type === 'tool_use');
-      const raw = toolBlock ? toolBlock.input as ScoreInput : null;
-
-      records.push({
-        runId,
-        nd: notice.nd,
-        score: raw?.score ?? null,
-        rationale: raw?.rationale ?? null,
-        triageOk: raw != null,
-      });
-    } catch (err) {
-      // TRIAGE-03: individual failure must not abort the job
-      console.warn(`[triage] Notice ${notice.nd} failed:`, String(err).slice(0, 120));
-      records.push({
-        runId,
-        nd: notice.nd,
-        score: null,
-        rationale: null,
-        triageOk: false,
-      });
+    for (let j = 0; j < batch.length; j++) {
+      const notice = batch[j];
+      const result = results[j];
+      if (result.status === 'fulfilled') {
+        totalInputTokens  += result.value.usage.input_tokens;
+        totalOutputTokens += result.value.usage.output_tokens;
+        const toolBlock = result.value.content.find(b => b.type === 'tool_use');
+        const raw = toolBlock ? toolBlock.input as ScoreInput : null;
+        records.push({ runId, nd: notice.nd, score: raw?.score ?? null, rationale: raw?.rationale ?? null, triageOk: raw != null });
+      } else {
+        // TRIAGE-03: individual failure must not abort the job
+        console.warn(`[triage] Notice ${notice.nd} failed:`, String(result.reason).slice(0, 120));
+        records.push({ runId, nd: notice.nd, score: null, rationale: null, triageOk: false });
+      }
     }
   }
 
