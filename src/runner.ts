@@ -8,7 +8,7 @@ import {
 } from './db/queries.js';
 import { fetchNewNotices } from './fetcher/index.js';
 import { applyHardFilters } from './filter/index.js';
-import { createGmailTransport, verifySmtp, sendDigestEmail } from './email/smtp.js';
+import { sendDigestEmail } from './email/smtp.js';
 import { triageNotices } from './triage/index.js';
 import { buildDigest } from './email/digest.js';
 import type { RawNotice } from './fetcher/types.js';
@@ -68,17 +68,6 @@ async function main(): Promise<void> {
 
   console.log(`[runner] Starting — DB: ${config.dbPath}`);
   console.log(`[runner] PID: ${process.pid}, UTC: ${new Date().toISOString()}`);
-
-  // DIGEST-05: Verify SMTP auth before any pipeline work — exit immediately if auth fails
-  const transporter = createGmailTransport(config.gmailUser, config.gmailAppPassword);
-  try {
-    await verifySmtp(transporter);
-    console.log('[runner] SMTP auth verified');
-  } catch (err) {
-    console.error('[runner] FATAL: Gmail SMTP auth failed:', err);
-    console.error('[runner] Check GMAIL_USER and GMAIL_APP_PASSWORD env vars.');
-    process.exit(2);
-  }
 
   // Open DB — will throw SQLITE_CANTOPEN if /data Volume not mounted
   let db: ReturnType<typeof openDb>;
@@ -162,7 +151,7 @@ async function main(): Promise<void> {
     );
 
     try {
-      await sendDigestEmail(transporter, config, digest);
+      await sendDigestEmail(config.resendApiKey, digest);
       console.log(`[runner] Digest sent: "${digest.subject}"`);
     } catch (err) {
       console.error('[runner] WARNING: Email send failed (run data preserved):', err);

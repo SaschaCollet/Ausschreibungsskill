@@ -1,69 +1,48 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 
-// Use vi.hoisted so these are available inside the hoisted vi.mock factory
-const { mockVerify, mockSendMail, mockCreateTransport } = vi.hoisted(() => {
-  const mockVerify = vi.fn();
-  const mockSendMail = vi.fn();
-  const mockCreateTransport = vi.fn().mockReturnValue({
-    verify: mockVerify,
-    sendMail: mockSendMail,
-  });
-  return { mockVerify, mockSendMail, mockCreateTransport };
-});
-
-vi.mock('nodemailer', () => ({
-  default: { createTransport: mockCreateTransport },
+const mockSend = vi.fn();
+vi.mock('resend', () => ({
+  Resend: vi.fn().mockImplementation(() => ({
+    emails: { send: mockSend },
+  })),
 }));
 
-import { createGmailTransport, verifySmtp, sendDigestEmail } from './smtp.js';
+import { sendDigestEmail } from './smtp.js';
 import type { DigestEmailPayload } from './smtp.js';
 
-describe('createGmailTransport', () => {
-  it('calls nodemailer.createTransport with service:gmail and provided credentials', () => {
-    createGmailTransport('test@gmail.com', 'app-password-16chars');
-    expect(mockCreateTransport).toHaveBeenCalledWith({
-      service: 'gmail',
-      auth: { user: 'test@gmail.com', pass: 'app-password-16chars' },
-    });
-  });
-});
-
-describe('verifySmtp', () => {
-  beforeEach(() => mockVerify.mockReset());
-
-  it('DIGEST-05: resolves when verify() succeeds', async () => {
-    mockVerify.mockResolvedValueOnce(true);
-    const transporter = createGmailTransport('u', 'p');
-    await expect(verifySmtp(transporter)).resolves.toBeUndefined();
-  });
-
-  it('DIGEST-05: propagates error when verify() throws (wrong app password)', async () => {
-    mockVerify.mockRejectedValueOnce(new Error('535 Authentication credentials invalid'));
-    const transporter = createGmailTransport('u', 'wrong');
-    await expect(verifySmtp(transporter)).rejects.toThrow('535');
-  });
-});
+const payload: DigestEmailPayload = {
+  subject: '[Scanner] 2A + 3B Ausschreibungen — 2026-05-06',
+  html: '<html><body>test</body></html>',
+  text: 'test plain',
+};
 
 describe('sendDigestEmail', () => {
-  beforeEach(() => mockSendMail.mockReset());
-
-  it('DIGEST-01: calls sendMail with correct from/to/subject/html/text', async () => {
-    mockSendMail.mockResolvedValueOnce({ messageId: 'abc123' });
-    const transporter = createGmailTransport('sender@gmail.com', 'p');
-    const payload: DigestEmailPayload = {
-      subject: '[Scanner] 2A + 3B Ausschreibungen — 2026-05-06',
-      html: '<html><body>test</body></html>',
-      text: 'test plain',
-    };
-
-    await sendDigestEmail(transporter, { gmailUser: 'sender@gmail.com' }, payload);
-
-    expect(mockSendMail).toHaveBeenCalledWith({
-      from: '"Ausschreibungs-Scanner" <sender@gmail.com>',
+  it('DIGEST-01: sends to sascha.collet@gmail.com with correct subject/html/text', async () => {
+    mockSend.mockResolvedValueOnce({ data: { id: 'abc123' }, error: null });
+    await sendDigestEmail('re_test_key', payload);
+    expect(mockSend).toHaveBeenCalledWith(expect.objectContaining({
       to: 'sascha.collet@gmail.com',
-      subject: '[Scanner] 2A + 3B Ausschreibungen — 2026-05-06',
-      text: 'test plain',
-      html: '<html><body>test</body></html>',
-    });
+      subject: payload.subject,
+      html: payload.html,
+      text: payload.text,
+    }));
+  });
+
+  it('DIGEST-01: throws when Resend returns an error', async () => {
+    mockSend.mockResolvedValueOnce({ data: null, error: { message: 'Invalid API key' } });
+    await expect(sendDigestEmail('bad_key', payload)).rejects.toThrow('Invalid API key');
+  });
+
+  it('DIGEST-01: throws when Resend call rejects', async () => {
+    mockSend.mockRejectedValueOnce(new Error('Network error'));
+    await expect(sendDigestEmail('re_test_key', payload)).rejects.toThrow('Network error');
+  });
+
+  it('DIGEST-01: from address identifies the scanner', async () => {
+    mockSend.mockResolvedValueOnce({ data: { id: 'x' }, error: null });
+    await sendDigestEmail('re_test_key', payload);
+    expect(mockSend).toHaveBeenCalledWith(expect.objectContaining({
+      from: expect.stringContaining('Ausschreibungs-Scanner'),
+    }));
   });
 });

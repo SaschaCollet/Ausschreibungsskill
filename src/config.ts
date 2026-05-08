@@ -2,8 +2,7 @@ import cpvConfig from '../cpv-codes.json';
 
 export interface AppConfig {
   dbPath: string;
-  gmailUser: string;
-  gmailAppPassword: string;
+  resendApiKey: string;
   anthropicApiKey: string;
 }
 
@@ -28,19 +27,17 @@ export function buildCpvQueryPart(): string {
  */
 export function getConfig(): AppConfig {
   const missing: string[] = [];
-  if (!process.env.GMAIL_USER)          missing.push('GMAIL_USER');
-  if (!process.env.GMAIL_APP_PASSWORD)  missing.push('GMAIL_APP_PASSWORD');
-  if (!process.env.ANTHROPIC_API_KEY)   missing.push('ANTHROPIC_API_KEY');
+  if (!process.env.RESEND_API_KEY)     missing.push('RESEND_API_KEY');
+  if (!process.env.ANTHROPIC_API_KEY)  missing.push('ANTHROPIC_API_KEY');
   if (missing.length > 0) {
     throw new Error(
       `[config] Missing required environment variables: ${missing.join(', ')}\n` +
-      `Set these in Railway Environment Variables before deploying Phase 2.`
+      `Set these in Railway Environment Variables before deploying.`
     );
   }
   return {
     dbPath: process.env.DB_PATH ?? '/data/scanner.db',
-    gmailUser: process.env.GMAIL_USER!,
-    gmailAppPassword: process.env.GMAIL_APP_PASSWORD!,
+    resendApiKey: process.env.RESEND_API_KEY!,
     anthropicApiKey: process.env.ANTHROPIC_API_KEY!,
   };
 }
