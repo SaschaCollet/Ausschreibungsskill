@@ -68,7 +68,7 @@ export function markNoticeSeen(db: Database.Database, notices: NoticeRecord[]): 
  * A concurrent INSERT throws a UNIQUE constraint violation if row exists.
  * This satisfies T-02-02: prevents two cron invocations running simultaneously.
  */
-const LOCK_STALE_MS = 2 * 60 * 60 * 1000; // 2 hours
+const LOCK_STALE_MS = 45 * 60 * 1000; // 45 minutes
 
 export function acquireJobLock(db: Database.Database): boolean {
   // Clear stale lock if previous run was killed before releaseJobLock()
