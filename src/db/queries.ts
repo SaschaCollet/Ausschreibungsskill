@@ -72,11 +72,15 @@ const LOCK_STALE_MS = 45 * 60 * 1000; // 45 minutes
 
 export function acquireJobLock(db: Database.Database): boolean {
   // Clear stale lock if previous run was killed before releaseJobLock()
-  const existing = db.prepare('SELECT locked_at FROM job_lock WHERE id = 1').get() as { locked_at: string } | undefined;
+  const existing = db.prepare('SELECT locked_at, pid FROM job_lock WHERE id = 1').get() as { locked_at: string; pid: number } | undefined;
   if (existing) {
     const age = Date.now() - new Date(existing.locked_at).getTime();
-    if (age > LOCK_STALE_MS) {
-      console.log(`[lock] Clearing stale lock (age: ${Math.round(age / 60000)}m)`);
+    // PID-check: in a new Railway container, PIDs from previous containers never exist.
+    // If process.kill(pid, 0) throws, the locking process is dead → lock is stale.
+    let pidDead = false;
+    try { process.kill(existing.pid, 0); } catch { pidDead = true; }
+    if (pidDead || age > LOCK_STALE_MS) {
+      console.log(`[lock] Clearing stale lock (age: ${Math.round(age / 60000)}m, pid: ${existing.pid}, pidDead: ${pidDead})`);
       db.prepare('DELETE FROM job_lock WHERE id = 1').run();
     }
   }
