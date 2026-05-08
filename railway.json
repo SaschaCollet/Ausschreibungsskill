@@ -2,6 +2,6 @@
   "$schema": "https://railway.com/railway.schema.json",
   "deploy": {
     "cronSchedule": "0 8 * * *",
-    "startCommand": "tsx src/runner.ts"
+    "startCommand": "npx tsx src/runner.ts"
   }
 }
