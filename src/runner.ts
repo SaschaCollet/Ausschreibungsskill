@@ -82,6 +82,12 @@ async function main(): Promise<void> {
     process.exit(2);
   }
 
+  // CLEAR_LOCK=1 forces stale lock removal (recovery after Railway deployment kill)
+  if (process.env.CLEAR_LOCK === '1') {
+    releaseJobLock(db);
+    console.log('[runner] Force-cleared job lock via CLEAR_LOCK=1');
+  }
+
   // Acquire job lock — prevents concurrent Railway cron executions (DEDUP-03)
   const locked = acquireJobLock(db);
   if (!locked) {
