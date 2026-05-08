@@ -53,7 +53,7 @@ function toNoticeRecord(notice: RawNotice): NoticeRecord {
 /**
  * Main pipeline entry point.
  *
- * Flow: SMTP auth → acquire lock → detect first run → fetch → filter →
+ * Flow: config → acquire lock → detect first run → fetch → filter →
  *       triage → store → email → finalize run → release lock → exit(0)
  *
  * Exit codes:
@@ -64,10 +64,13 @@ function toNoticeRecord(notice: RawNotice): NoticeRecord {
  * CRITICAL: db.close() MUST be called before process.exit() to checkpoint WAL data.
  */
 async function main(): Promise<void> {
+  // Log before getConfig() so Railway always captures at least one line,
+  // even if env vars are missing and getConfig() throws immediately.
+  console.log(`[runner] Starting — PID: ${process.pid}, UTC: ${new Date().toISOString()}`);
+
   const config = getConfig();
 
-  console.log(`[runner] Starting — DB: ${config.dbPath}`);
-  console.log(`[runner] PID: ${process.pid}, UTC: ${new Date().toISOString()}`);
+  console.log(`[runner] Config loaded — DB: ${config.dbPath}`);
 
   // Open DB — will throw SQLITE_CANTOPEN if /data Volume not mounted
   let db: ReturnType<typeof openDb>;
