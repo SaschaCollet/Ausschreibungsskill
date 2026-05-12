@@ -62,6 +62,16 @@ export function openDb(dbPath: string): Database.Database {
     CREATE INDEX IF NOT EXISTS idx_triage_results_nd    ON triage_results(nd);
     CREATE INDEX IF NOT EXISTS idx_triage_results_run   ON triage_results(run_id);
     CREATE INDEX IF NOT EXISTS idx_triage_results_score ON triage_results(score);
+
+    CREATE TABLE IF NOT EXISTS analyses (
+      id            INTEGER PRIMARY KEY AUTOINCREMENT,
+      nd            TEXT    NOT NULL REFERENCES seen_notices(nd),
+      run_id        INTEGER NOT NULL REFERENCES runs(id),
+      analysis_text TEXT    NOT NULL,
+      created_at    TEXT    NOT NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_analyses_nd  ON analyses(nd);
+    CREATE INDEX IF NOT EXISTS idx_analyses_run ON analyses(run_id);
   `);
 
   // Migration for existing DBs: add Phase 2 columns to runs table.
@@ -74,6 +84,17 @@ export function openDb(dbPath: string): Database.Database {
     'ALTER TABLE runs ADD COLUMN haiku_cost_usd REAL',
   ];
   for (const stmt of phase2Cols) {
+    try { db.exec(stmt); } catch { /* column already exists */ }
+  }
+
+  // Migration for existing DBs: add Phase 3 columns to runs table.
+  const phase3Cols = [
+    'ALTER TABLE runs ADD COLUMN analysis_count INTEGER',
+    'ALTER TABLE runs ADD COLUMN sonnet_input_tokens INTEGER',
+    'ALTER TABLE runs ADD COLUMN sonnet_output_tokens INTEGER',
+    'ALTER TABLE runs ADD COLUMN sonnet_cost_usd REAL',
+  ];
+  for (const stmt of phase3Cols) {
     try { db.exec(stmt); } catch { /* column already exists */ }
   }
 

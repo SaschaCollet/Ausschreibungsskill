@@ -46,3 +46,25 @@ describe('sendDigestEmail', () => {
     }));
   });
 });
+
+describe('sendDigestEmail with attachments', () => {
+  it('ANALYSIS-03: passes attachments array to resend.emails.send when provided', async () => {
+    mockSend.mockResolvedValueOnce({ data: { id: 'xyz789' }, error: null });
+    const attachments = [
+      { filename: '500-2026-analyse.md', content: Buffer.from('# Analyse', 'utf-8'), content_type: 'text/markdown' },
+    ];
+    await sendDigestEmail('re_test_key', payload, attachments);
+    expect(mockSend).toHaveBeenCalledWith(expect.objectContaining({
+      attachments: expect.arrayContaining([
+        expect.objectContaining({ filename: '500-2026-analyse.md' }),
+      ]),
+    }));
+  });
+
+  it('ANALYSIS-03: does not include attachments key when attachments array is empty', async () => {
+    mockSend.mockResolvedValueOnce({ data: { id: 'xyz790' }, error: null });
+    await sendDigestEmail('re_test_key', payload, []);
+    const callArg = mockSend.mock.calls[mockSend.mock.calls.length - 1][0];
+    expect(callArg).not.toHaveProperty('attachments');
+  });
+});

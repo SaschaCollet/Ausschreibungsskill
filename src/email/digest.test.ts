@@ -115,3 +115,37 @@ describe('buildDigest', () => {
     expect(result.text.length).toBeGreaterThan(10);
   });
 });
+
+function makeNoticeWithTriage(nd: string, score: number): { notice: NoticeRecord; triage: TriageRecord } {
+  return {
+    notice: { nd, firstSeen: '2026-05-01', titleDeu: `Ausschreibung ${nd}`, cpvCodes: '["79100000"]', deadline: '2026-07-01', budget: 50000 },
+    triage: { runId: 1, nd, score, rationale: 'Test Begründung für diesen Score.', triageOk: true },
+  };
+}
+
+const emptyStats: TriageStats = { totalInputTokens: 0, totalOutputTokens: 0, estimatedCostUsd: 0 };
+
+describe('buildDigest — Phase 3 analysis badge', () => {
+  it('ANALYSIS-03: Tier-A card contains "Vollanalyse angehangen" badge when hasAnalysis=true', () => {
+    const noticesAndTriage = [makeNoticeWithTriage('500-2026', 9)];
+    const analysisMap = new Map([['500-2026', true]]);
+    const digest = buildDigest(noticesAndTriage, emptyStats, '2026-05-11', analysisMap, []);
+    expect(digest.html).toContain('Vollanalyse angehangen');
+  });
+
+  it('ANALYSIS-03: Tier-A card shows Tageslimit note when analysisSkipped=true', () => {
+    const noticesAndTriage = [makeNoticeWithTriage('501-2026', 8)];
+    const analysisMap = new Map<string, boolean>();
+    const skippedNds = ['501-2026'];
+    const digest = buildDigest(noticesAndTriage, emptyStats, '2026-05-11', analysisMap, skippedNds);
+    expect(digest.html).toContain('Tageslimit');
+  });
+
+  it('ANALYSIS-03: Tier-A card shows no badge when hasAnalysis=false and not skipped', () => {
+    const noticesAndTriage = [makeNoticeWithTriage('502-2026', 7)];
+    const analysisMap = new Map<string, boolean>();
+    const digest = buildDigest(noticesAndTriage, emptyStats, '2026-05-11', analysisMap, []);
+    expect(digest.html).not.toContain('Vollanalyse angehangen');
+    expect(digest.html).not.toContain('Tageslimit');
+  });
+});

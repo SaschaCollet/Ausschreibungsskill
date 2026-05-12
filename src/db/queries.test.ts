@@ -4,6 +4,7 @@ import {
   isNoticeNew, markNoticeSeen,
   acquireJobLock, releaseJobLock,
   createRun, finalizeRun,
+  saveAnalysis, updateRunSonnetStats,
 } from './queries.js';
 import type Database from 'better-sqlite3';
 
@@ -86,5 +87,45 @@ describe('run logging queries', () => {
     const row = db.prepare('SELECT total_available, stored FROM runs WHERE id = ?').get(Number(id)) as any;
     expect(row.total_available).toBe(120);
     expect(row.stored).toBe(80);
+  });
+});
+
+describe('Phase 3: saveAnalysis', () => {
+  let db: Database.Database;
+  beforeEach(() => { db = openDb(':memory:'); });
+  afterEach(() => { db.close(); });
+
+  it('ANALYSIS-03: inserts analysis row retrievable by nd', () => {
+    // Prerequisite: seen_notices row and runs row must exist (FK references)
+    db.prepare(`INSERT INTO seen_notices (nd, first_seen) VALUES ('500-2026', '2026-05-01')`).run();
+    const runId = db.prepare(`INSERT INTO runs (started_at, query_from, query_to) VALUES (?,?,?)`).run(new Date().toISOString(), '2026-05-01', '2026-05-02').lastInsertRowid;
+    saveAnalysis(db, '500-2026', runId, '# Analyse\n\nTest content');
+    const row = db.prepare(`SELECT nd, analysis_text FROM analyses WHERE nd = ?`).get('500-2026') as { nd: string; analysis_text: string } | undefined;
+    expect(row).toBeDefined();
+    expect(row!.nd).toBe('500-2026');
+    expect(row!.analysis_text).toContain('# Analyse');
+  });
+
+  it('ANALYSIS-03: saveAnalysis uses named params — no SQL injection via nd', () => {
+    db.prepare(`INSERT INTO seen_notices (nd, first_seen) VALUES ('501-2026', '2026-05-01')`).run();
+    const runId = db.prepare(`INSERT INTO runs (started_at, query_from, query_to) VALUES (?,?,?)`).run(new Date().toISOString(), '2026-05-01', '2026-05-02').lastInsertRowid;
+    // Special chars in analysisText must not throw
+    expect(() => saveAnalysis(db, '501-2026', runId, "Text with 'single quotes' and \"double\"")).not.toThrow();
+  });
+});
+
+describe('Phase 3: updateRunSonnetStats', () => {
+  let db: Database.Database;
+  beforeEach(() => { db = openDb(':memory:'); });
+  afterEach(() => { db.close(); });
+
+  it('ANALYSIS-03: updates runs row with Sonnet token stats', () => {
+    const runId = db.prepare(`INSERT INTO runs (started_at, query_from, query_to) VALUES (?,?,?)`).run(new Date().toISOString(), '2026-05-01', '2026-05-02').lastInsertRowid;
+    updateRunSonnetStats(db, runId, { analysisCount: 3, inputTokens: 12000, outputTokens: 5000, costUsd: 0.111 });
+    const row = db.prepare(`SELECT analysis_count, sonnet_input_tokens, sonnet_output_tokens, sonnet_cost_usd FROM runs WHERE id = ?`).get(Number(runId)) as any;
+    expect(row.analysis_count).toBe(3);
+    expect(row.sonnet_input_tokens).toBe(12000);
+    expect(row.sonnet_output_tokens).toBe(5000);
+    expect(Math.abs(row.sonnet_cost_usd - 0.111)).toBeLessThan(0.0001);
   });
 });

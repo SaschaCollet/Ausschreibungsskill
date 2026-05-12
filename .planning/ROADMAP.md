@@ -54,7 +54,11 @@ Plans:
   1. Every digest entry with score >= 7 includes a link to or attachment of the full Sonnet analysis output
   2. On any day with more than 5 tenders scoring >= 7, exactly 5 analyses run (highest-scoring first) and the remainder are noted in the digest
   3. Each run log records Haiku token usage and Sonnet token usage separately, enabling cost tracking
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] 03-01-PLAN.md — DB schema migration (analyses table + runs Phase 3 columns) + Wave 0 test stubs
+- [ ] 03-02-PLAN.md — Analysis module (src/analysis/index.ts, prompt.ts, config files) — ANALYSIS-01, ANALYSIS-02
+- [ ] 03-03-PLAN.md — Email integration (smtp.ts attachments + digest.ts badge + runner.ts pipeline wiring) — ANALYSIS-03
 
 ### Phase 4: Tuning and Hardening
 **Goal**: After 4+ weeks of production data, CPV codes, score thresholds, and prompt wording are refined based on observed signal quality — the system is demonstrably more precise than at Phase 3 launch
@@ -75,5 +79,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Pipeline Foundation | 0/? | Not started | - |
 | 2. Triage and Digest | 0/5 | Planned | - |
-| 3. Full Analysis Integration | 0/? | Not started | - |
+| 3. Full Analysis Integration | 0/3 | Planned | - |
 | 4. Tuning and Hardening | 0/? | Not started | - |

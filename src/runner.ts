@@ -5,12 +5,15 @@ import {
   markNoticeSeen,
   createRun, finalizeRun,
   saveTriageResults, updateRunTriageStats,
+  updateRunSonnetStats,
 } from './db/queries.js';
 import { fetchNewNotices } from './fetcher/index.js';
 import { applyHardFilters } from './filter/index.js';
 import { sendDigestEmail } from './email/smtp.js';
 import { triageNotices } from './triage/index.js';
 import { buildDigest } from './email/digest.js';
+import { analyzeNotices } from './analysis/index.js';
+import type { AnalysisOutput } from './analysis/index.js';
 import type { RawNotice } from './fetcher/types.js';
 import type { NoticeRecord } from './db/queries.js';
 import type { TriageOutput } from './triage/index.js';
@@ -146,6 +149,19 @@ async function main(): Promise<void> {
       console.log('[runner] No new notices to triage');
     }
 
+    // Phase: Analysis — Sonnet full analysis for top Tier-A notices (ANALYSIS-01, ANALYSIS-02)
+    let analysisOutput: AnalysisOutput | null = null;
+    if (triageOutput && triageOutput.records.some(r => r.triageOk && r.score !== null && r.score >= 7)) {
+      const allTierA = triageOutput.records.filter(r => r.triageOk && r.score !== null && r.score >= 7);
+      console.log(`[runner] ${allTierA.length} Tier-A notice(s) eligible for analysis`);
+      analysisOutput = await analyzeNotices(allTierA, config.anthropicApiKey, runId, db);
+      const analysisOkCount = analysisOutput.records.filter(r => r.analysisOk).length;
+      console.log(
+        `[runner] Analysis complete — ok=${analysisOkCount} failed=${analysisOutput.records.length - analysisOkCount} ` +
+        `skipped=${analysisOutput.skippedNds.length}`,
+      );
+    }
+
     // Phase: Email digest (DIGEST-01 through DIGEST-04)
     const noticesAndTriage = triageOutput
       ? toStore.map((notice, i) => ({ notice, triage: triageOutput!.records[i] }))
@@ -153,15 +169,29 @@ async function main(): Promise<void> {
 
     const emptyStats = { totalInputTokens: 0, totalOutputTokens: 0, estimatedCostUsd: 0 };
     const digestStats = triageOutput?.stats ?? emptyStats;
+    const analysisMap = new Map(
+      (analysisOutput?.records ?? [])
+        .filter(r => r.analysisOk)
+        .map(r => [r.nd, true] as [string, boolean]),
+    );
     const digest = buildDigest(
       noticesAndTriage,
       digestStats,
       new Date().toISOString().slice(0, 10),
+      analysisMap,
+      analysisOutput?.skippedNds ?? [],
     );
 
     try {
-      await sendDigestEmail(config.resendApiKey, digest);
-      console.log(`[runner] Digest sent: "${digest.subject}"`);
+      const attachments = (analysisOutput?.records ?? [])
+        .filter(r => r.analysisOk && r.analysisText)
+        .map(r => ({
+          filename: `${r.nd}-analyse.md`,
+          content: Buffer.from(r.analysisText!, 'utf-8'),
+          content_type: 'text/markdown',
+        }));
+      await sendDigestEmail(config.resendApiKey, digest, attachments);
+      console.log(`[runner] Digest sent: "${digest.subject}" (${attachments.length} attachment(s))`);
     } catch (err) {
       console.error('[runner] WARNING: Email send failed (run data preserved):', err);
       // Non-fatal: triage results and run stats are already persisted
@@ -187,6 +217,15 @@ async function main(): Promise<void> {
       });
     }
 
+    if (analysisOutput) {
+      updateRunSonnetStats(db, runId, {
+        analysisCount:  analysisOutput.records.filter(r => r.analysisOk).length,
+        inputTokens:    analysisOutput.stats.totalInputTokens,
+        outputTokens:   analysisOutput.stats.totalOutputTokens,
+        costUsd:        analysisOutput.stats.estimatedCostUsd,
+      });
+    }
+
     console.log(
       `[runner] Run complete — ` +
       `available=${fetchResult.totalAvailable} ` +
@@ -195,7 +234,9 @@ async function main(): Promise<void> {
       `kept=${toStore.length} ` +
       `dropped=${filterResult.dropped.length} ` +
       `triaged=${triageOutput?.records.length ?? 0} ` +
-      `cost=$${triageOutput?.stats.estimatedCostUsd.toFixed(4) ?? '0.0000'}`
+      `analysed=${analysisOutput?.records.filter(r => r.analysisOk).length ?? 0} ` +
+      `cost_haiku=$${triageOutput?.stats.estimatedCostUsd.toFixed(4) ?? '0.0000'} ` +
+      `cost_sonnet=$${analysisOutput?.stats.estimatedCostUsd.toFixed(4) ?? '0.0000'}`
     );
 
   } catch (err) {

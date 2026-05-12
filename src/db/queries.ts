@@ -214,3 +214,63 @@ export function updateRunTriageStats(
     Number(runId)
   );
 }
+
+// ── Phase 3: Full Analysis ─────────────────────────────────────────────────
+
+export interface AnalysisRecord {
+  runId: number | bigint;
+  nd: string;
+  analysisText: string | null;
+  analysisOk: boolean;
+}
+
+/**
+ * Insert one analysis row into the analyses table.
+ * Uses named parameters — no string interpolation (T-03-01-01 pattern).
+ */
+export function saveAnalysis(
+  db: Database.Database,
+  nd: string,
+  runId: number | bigint,
+  analysisText: string,
+): void {
+  db.prepare(`
+    INSERT INTO analyses (nd, run_id, analysis_text, created_at)
+    VALUES (@nd, @runId, @analysisText, @createdAt)
+  `).run({
+    nd,
+    runId: Number(runId),
+    analysisText,
+    createdAt: new Date().toISOString(),
+  });
+}
+
+/**
+ * Update Phase 3 Sonnet token stats on the runs row.
+ * Called once per run after the analysis loop completes.
+ */
+export function updateRunSonnetStats(
+  db: Database.Database,
+  runId: number | bigint,
+  stats: {
+    analysisCount: number;
+    inputTokens: number;
+    outputTokens: number;
+    costUsd: number;
+  }
+): void {
+  db.prepare(`
+    UPDATE runs SET
+      analysis_count       = ?,
+      sonnet_input_tokens  = ?,
+      sonnet_output_tokens = ?,
+      sonnet_cost_usd      = ?
+    WHERE id = ?
+  `).run(
+    stats.analysisCount,
+    stats.inputTokens,
+    stats.outputTokens,
+    stats.costUsd,
+    Number(runId),
+  );
+}

@@ -23,9 +23,19 @@ function formatDeadline(deadline: string | undefined): string {
   return deadline.split('+')[0].split('T')[0];
 }
 
-function renderNoticeCard(n: NoticeWithTriage, tierColor: string): string {
+function renderNoticeCard(
+  n: NoticeWithTriage,
+  tierColor: string,
+  hasAnalysis = false,
+  analysisSkipped = false,
+): string {
   const title = n.notice.titleDeu ?? '(kein Titel)';
   const link = tedLink(n.notice.nd);
+  const badge = hasAnalysis
+    ? `<p style="margin:4px 0 0;font-size:12px;">&#128206; Vollanalyse angehangen</p>`
+    : analysisSkipped
+    ? `<p style="margin:4px 0 0;font-size:12px;color:#888888;">Analyse aufgrund des Tageslimits nicht erstellt</p>`
+    : '';
   return `
       <tr>
         <td style="padding:8px 24px;">
@@ -58,6 +68,7 @@ function renderNoticeCard(n: NoticeWithTriage, tierColor: string): string {
                     TED-Ausschreibung ansehen
                   </a>
                 </p>
+                ${badge}
               </td>
             </tr>
           </table>
@@ -69,9 +80,16 @@ function renderTierSection(
   label: string,
   color: string,
   notices: NoticeWithTriage[],
+  analysisMap?: Map<string, boolean>,
+  skippedNds?: string[],
 ): string {
   if (notices.length === 0) return '';
-  const cards = notices.map(n => renderNoticeCard(n, color)).join('');
+  const cards = notices.map(n => renderNoticeCard(
+    n,
+    color,
+    analysisMap?.get(n.notice.nd) ?? false,
+    skippedNds?.includes(n.notice.nd) ?? false,
+  )).join('');
   return `
       <tr>
         <td style="padding:16px 24px 8px;">
@@ -92,6 +110,8 @@ export function buildDigest(
   noticesAndTriage: Array<{ notice: NoticeRecord; triage: TriageRecord }>,
   stats: TriageStats,
   dateStr?: string,
+  analysisMap?: Map<string, boolean>,
+  skippedNds?: string[],
 ): DigestEmailPayload {
   const date = dateStr ?? new Date().toISOString().slice(0, 10);
   const triagedCount = noticesAndTriage.length;
@@ -141,7 +161,7 @@ export function buildDigest(
   // Full tiered digest
   const subject = `[Scanner] ${tierA.length}A + ${tierB.length}B Ausschreibungen — ${date}`;
 
-  const tierASection = renderTierSection('TIER A — Score 7-10', '#0d6e3a', tierA);
+  const tierASection = renderTierSection('TIER A — Score 7-10', '#0d6e3a', tierA, analysisMap, skippedNds);
   const tierBSection = renderTierSection('TIER B — Score 4-6', '#c47900', tierB);
 
   const html = `<!DOCTYPE html>
